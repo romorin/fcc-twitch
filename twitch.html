@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+
+<!-- 	freeCodeCamp twitch challenge -->
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>Streamers</title>
+
+		<script type="text/javascript" src="https://code.jquery.com/jquery-2.2.3.min.js"></script>
+
+		<link rel="stylesheet" href="twitch.css" />
+		<script type="text/javascript" src="twitch.js"></script>
+	</head>
+	<body>
+		<!-- Header -->
+		<div class="header">Twitching</div>
+		
+		<!-- buttons -->
+		<div class="buttons-drawing">
+			<div class="draw-row">&nbsp;</div>
+			<div class="draw-row">
+				<label>Regulars <input type="radio" id="regulars" name="source" value="regulars" checked="true" /></label>
+				<span  class="middle-draw"></span>
+				<label>All <input type="radio" id="all" name="view" value="all" checked="true" /></label>
+			</div>
+			<div class="draw-row">
+				<label>Featured <input type="radio" id="featured" name="source" value="featured" /></label>
+				<span class="middle-draw"></span>
+				<label>Online <input type="radio" id="online" name="view" value="online" /></label>
+			</div>
+			<div class="draw-row">
+				<label>Search <input type="radio" id="search" name="source" value="search" /></label>
+				<span class="middle-draw"></span>
+				<label>Offline <input type="radio" id="offline" name="view" value="offline" /></label>
+			</div>
+		</div>
+		
+		<!-- Search sub bar -->
+
+		<div class="search-bar hidden-start">
+			<input class="input" type="text" name="search-keyword" id="search-keyword" placeholder="About">
+			<button id="search-button" class="btn btn-default">Search</button>
+		</div>
+
+		<!-- Results Container -->
+		<div class="results hidden-start"></div>
+		
+		<!-- Navigation links -->
+		<div class="navigation-links">
+			<div><span id="previous" class="hidden-start"><</span></div>
+			<div><span id="next" class="hidden-start">></span></div>
+		</div>
+		
+		<!-- Footer -->
+		<footer class="footer">
+			by <a class="link" href="http://www.freecodecamp.com/romorin">romorin</a> -
+			powered by <a class="link" href="https://twitch.tv">Twitch</a><br/>
+		</footer>
+	</body>
+	
+	<!-- Hidden result template used via javascript. -->
+	<div class="result-template">
+		<div class="result">
+			<img src="" alt="" class="banner" />
+			<div class="title"></div>
+			<div class="content"></div>
+		</div>
+	</div>
+</html>
