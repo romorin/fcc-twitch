@@ -79,22 +79,36 @@ body {
 	Result listings
 */
 .results {
+	margin: 0 auto;
+	max-width: 90%;
+	padding: 10px;
+
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: flex-start;
+	align-content: flex-start;
+}
+.result {
+	margin: 10px;
+	padding: 10px;
+	cursor: pointer;
+	width: 300px;
+
 	background-color: #ffffff;
 	color: #212121;
-	margin: 0 auto;
-	width: 90%;
-	padding: 10px;
-}
-.results > div {
-	padding: 20px;
-	cursor: pointer;
+	border-style: solid;
+	border-color: #ffffff;
 
+	display: flex;
+	flex-direction: column;
 }
-.results > hr {
-	margin: 10px 10%;
+.logo {
+	margin: 10px auto;
+	max-width: 100%;
 }
 .hovering-result {
-	background-color: #cfd8dc;
+	border-color: orange;
 }
 .title {
 	font-size: 1.5rem;
