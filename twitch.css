@@ -66,15 +66,6 @@ body {
 	background-color: yellow;
 }
 
-.search-bar {
-	margin: 10 auto;
-	text-align: center;
-}
-.search-bar > * {
-	display: inline-block;
-	text-align: left;
-}
-
 /*
 	Result listings
 */
@@ -159,26 +150,6 @@ body {
 .link:hover {
 	color: red;
 	text-decoration: none;
-}
-
-/*
-	Btn created with http://css3buttongenerator.com/
-*/
-.input {
-  color: #ffffff;
-  background: #707070;
-  padding: 6px 20px 6px 20px;
-  border: solid #303030 1px;
-  text-decoration: none;
-}
-	.mobile-full {
-		margin: 0 auto;
-		width: 100%;
-	}
-@media all and (max-width: @screen-xs-max) {
-	.mobile-full {
-		width: 1000px;
-	}
 }
 
 @media all and (max-width: 320px) {

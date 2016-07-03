@@ -7,7 +7,6 @@ var REGULARS = ["ESL_SC2", "OgamingSC2", "cretetion", "freecodecamp", "storbeck"
 var createListGetter = function () { return new TestApiGetter(TEST_TWITCH_LIST_JSON); };
 var createChannelGetter = function () { return new TestApiGetter(TEST_TWITCH_CHANNEL_ERROR_JSON); };
 var createFeaturedGetter = function () { return new TestApiGetter(TEST_TWITCH_FEATURED_JSON); };
-var createSearchGetter = function () { return new TestApiGetter(TEST_TWITCH_SEARCH_JSON); };
 
 var TwitchersBuilder = (function () {
 	/*
@@ -56,8 +55,13 @@ var TwitchersBuilder = (function () {
 
 		// handle mouse behaviour
 		if (url) {
-			copy.on("click", null, url, resultClick.bind(this));
-			copy.hover(resultHoverIn.bind(this), resultHoverOut.bind(this));
+			copy.on("click", null, url, 
+				function (event) {window.location.href = event.data;}
+			);
+			copy.hover(
+				function (event) {jQuery(event.currentTarget).addClass('hovering-result');},
+				function (event) {jQuery(event.currentTarget).removeClass('hovering-result');}
+			);
 		}
 
 		this._loadedTwichers.push(name);
@@ -71,21 +75,6 @@ var TwitchersBuilder = (function () {
 	/*
 		Private
 	*/
-	// called when the user click on a search result
-	function resultClick(event) {
-		window.location.href = event.data;
-	}
-
-	// focus the result when the user hover over it.
-	function resultHoverIn(event) {
-		jQuery(event.currentTarget).addClass('hovering-result');
-	}
-
-	// removes the focus when the pointer leaves the result
-	function resultHoverOut(event) {
-		jQuery(event.currentTarget).removeClass('hovering-result');
-	}
-
 	function buildStreaming(json) {
 		if ( !('streams' in json) || (Array.isArray && !Array.isArray(json.streams) ) ) {
 			return;
@@ -184,7 +173,6 @@ var TwitchHandler = (function () {
 
 		this._twitchRegularsBuilder = new RegularsTwitchersBuilder(createListGetter(), createChannelGetter(), REGULARS);
 		this._twitchFeaturedBuilder = new TwitchersBuilder(createFeaturedGetter());
-		this._twitchSearchBuilder = new TwitchersBuilder(createSearchGetter());
 	}
 
 	// called when the user chooses how to find the twitch streams
@@ -200,9 +188,6 @@ var TwitchHandler = (function () {
 				jQuery(".search-bar").hide();
 				this._twitchFeaturedBuilder.reset();
 				break;
-			case 'search':
-				jQuery(".search-bar").show();
-				break;
 		}
 	};
 
@@ -216,44 +201,12 @@ var TwitchHandler = (function () {
 		}
 	};
 
-	// called when the user want to display the pages corresponding to a keyword
-	TwitchHandler.prototype.onSearch = function() {
-		var keyword = jQuery("#search-keyword").val();
-		if (keyword !== "") {
-			//this._twitchSearchGetter.fetch(displaySearchResults.bind(this), keyword, this._offset);
-			this._lastKeyword = keyword;
-		}
-	};
-
-	// called when the user press the 'previous' navigation arrow
-	TwitchHandler.prototype.onPrevious = function() {
-		/*this._offset -= LIST_STEP;
-		if (this._offset < 0) {
-			this._offset = 0;
-		}
-		this._listUrlGetter.fetch(this._lastKeyword, this._offset, displaySearchResults.bind(this));*/
-	};
-
-	// called when the user press the 'next' navigation arrow
-	TwitchHandler.prototype.onNext = function() {
-		/*this._offset += LIST_STEP;
-		this._listUrlGetter.fetch(this._lastKeyword, this._offset, displaySearchResults.bind(this));*/
-	};
-
 	return TwitchHandler;
 })();
 
 /*********************************************************
 	jQuery bindings
 *********************************************************/
-
-function navHoverIn(event) {
-	jQuery(event.currentTarget).addClass('hovering-nav');
-}
-
-function navHoverOut(event) {
-	jQuery(event.currentTarget).removeClass('hovering-nav');
-}
 
 // to be done when the page is ready
 jQuery(document).ready(function() {
@@ -264,25 +217,6 @@ jQuery(document).ready(function() {
 
 	// handle view change
 	jQuery("input[name=view]:radio").change(pageHandler.onViewChange.bind(pageHandler));
-
-	// handle search button press
-	jQuery("#search-button").on("click", pageHandler.onSearch.bind(pageHandler));
-
-	// handle search input enter press
-	jQuery('#search-keyword').keydown(function(event) {
-	  if(event.keyCode == '13') {
-	    pageHandler.onSearch.call(pageHandler);
-	  }
-	});
-
-	// handle navigation arrows
-	var previous = jQuery("#previous");
-	previous.on("click", pageHandler.onPrevious.bind(pageHandler));
-	previous.hover(navHoverIn, navHoverOut);
-
-	var next = jQuery("#next");
-	next.on("click", pageHandler.onNext.bind(pageHandler));
-	next.hover(navHoverIn, navHoverOut);
 
 	// manually call onSourceChange to get an itial view
 	pageHandler.onSourceChange();
