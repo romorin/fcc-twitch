@@ -1,4 +1,4 @@
-var CHANNEL_EXAMPLE = {
+var TEST_TWITCH_CHANNEL_JSON = {
 	"mature":false,
 	"status":"@Dogwaddle working on Advanced Algorithm Challenges! #Programming\n\n\n\n\n\n",
 	"broadcaster_language":"en",
@@ -34,13 +34,13 @@ var CHANNEL_EXAMPLE = {
 	}
 };
 
-var CHANNEL_ERROR_EXAMPLE = {
+var TEST_TWITCH_CHANNEL_ERROR_JSON = {
 	"error":"Unprocessable Entity",
 	"status":422,
 	"message":"Channel 'brunofin' is not available on Twitch"
 };
 
-var TEST_TWITCH_REGULAR_JSON = {
+var TEST_TWITCH_LIST_JSON = {
 	"streams": [
 	{
 		"_id":21803398896,
