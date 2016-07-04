@@ -59,8 +59,8 @@ var TwitchersBuilder = (function () {
 				function (event) {window.location.href = event.data;}
 			);
 			copy.hover(
-				function (event) {jQuery(event.currentTarget).addClass('hovering-result');},
-				function (event) {jQuery(event.currentTarget).removeClass('hovering-result');}
+				function (event) {jQuery(event.currentTarget).addClass('focus-large');},
+				function (event) {jQuery(event.currentTarget).removeClass('focus-large');}
 			);
 		}
 
