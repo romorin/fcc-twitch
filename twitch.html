@@ -37,7 +37,7 @@
 		</div>
 
 		<!-- Results Container -->
-		<div class="results hidden-start"></div>
+		<div class="results hidden"></div>
 
 		<!-- Footer -->
 		<footer class="footer">
@@ -46,9 +46,12 @@
 		</footer>
 
 		<!-- Hidden result template used via javascript. -->
-		<template id="result-template">
+		<template id="result-template" class="hidden">
 			<div class="result">
-				<img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" class="logo" />
+				<svg class="status-border hidden">
+					<use xlink:href="border.svg#border"></use>
+				</svg>
+				<img src="placeholder.svg" alt="" class="logo" />
 				<div class="title"></div>
 				<div class="content"></div>
 			</div>

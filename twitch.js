@@ -32,35 +32,47 @@ var TwitchersBuilder = (function () {
 	/*
 		Protected
 	*/
-	TwitchersBuilder.prototype.buildChannel = function(channel) {
+	TwitchersBuilder.prototype.buildChannel = function(channel, isOnline) {
 		if(!('logo' in channel) || !('name' in channel) ||
 			!('status' in channel) || !('url' in channel)) {
 			return false;
 		}
 
-		this.buildEntry.call(this, channel.name, channel.status, channel.logo, channel.url);
+		this.buildEntry.call(this, channel.name, channel.status, isOnline, channel.logo, channel.url);
 		return true;
 	};
 
-	TwitchersBuilder.prototype.buildEntry = function(name, status, logo, url ) {
+	TwitchersBuilder.prototype.buildEntry = function(name, status, isOnline, logo, url ) {
 		// clone the template and fill the blanks
 		var copy = this._resTemplate.clone();
 		copy.find(".title").html(name);
 		copy.find(".content").html(status);
 
+
+		var logoElem = copy.find(".logo");
 		if (logo) {
-			copy.find(".logo").prop("src", logo);
-			copy.find(".logo").prop("alt", name);
+			logoElem.prop("src", logo);
+			logoElem.prop("alt", name);
 		}
+		var statusClass = isOnline ? "online" : "offline";
+		logoElem.addClass(statusClass);
 
 		// handle mouse behaviour
 		if (url) {
-			copy.on("click", null, url, 
+			copy.on("click", null, url,
 				function (event) {window.location.href = event.data;}
 			);
 			copy.hover(
-				function (event) {jQuery(event.currentTarget).addClass('focus-large');},
-				function (event) {jQuery(event.currentTarget).removeClass('focus-large');}
+				function (event) {
+					var target = jQuery(event.currentTarget);
+					target.addClass('linkable');
+					target.find(".status-border").removeClass('hidden');
+				},
+				function (event) {
+					var target = jQuery(event.currentTarget);
+					target.removeClass('linkable');
+					target.find(".status-border").addClass('hidden');
+				}
 			);
 		}
 
@@ -88,7 +100,7 @@ var TwitchersBuilder = (function () {
 				continue;
 			}
 			// clone the template and fill the blanks
-			this.buildChannel(streams[i].channel);
+			this.buildChannel(streams[i].channel, true);
 		}
 	}
 
@@ -138,7 +150,7 @@ var RegularsTwitchersBuilder = (function () {
 	};
 
 	function onReceivedChannel(json) {
-		if (!this.buildChannel(json)) {
+		if (!this.buildChannel(json, false)) {
 			this._numMissing++;
 		}
 		if ((this._loadedTwichers.length + this._numMissing) >= this._list.length) {
@@ -151,7 +163,7 @@ var RegularsTwitchersBuilder = (function () {
 		for (var i = 0; i < this._list.length; i++) {
 			var entry = this._list[i];
 			if (!isLoaded.call(this, entry)) {
-				this.buildEntry.call(this, entry, "Account closed", "http://placehold.it/300x300?text=?");
+				this.buildEntry.call(this, entry, "Account closed", false);
 			}
 		}
 		this._resContainer.show();
