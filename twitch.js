@@ -48,14 +48,14 @@ var TwitchersBuilder = (function () {
 		copy.find(".title").html(name);
 		copy.find(".content").html(status);
 
+		var statusClass = isOnline ? "online" : "offline";
+		copy.addClass(statusClass);
 
 		var logoElem = copy.find(".logo");
 		if (logo) {
 			logoElem.prop("src", logo);
 			logoElem.prop("alt", name);
 		}
-		var statusClass = isOnline ? "online" : "offline";
-		logoElem.addClass(statusClass);
 
 		// handle mouse behaviour
 		if (url) {
@@ -80,8 +80,28 @@ var TwitchersBuilder = (function () {
 		this._resContainer.append(copy);
 	};
 
-	TwitchersBuilder.prototype.runPostStreamings = function () {
+	TwitchersBuilder.prototype.finishDisplay = function () {
+		this.filterStatus.call(this);
 		this._resContainer.show();
+	};
+
+	TwitchersBuilder.prototype.filterStatus = function() {
+		var filter = jQuery("input:radio[name=view]:checked").attr('id');
+
+		switch(filter) {
+			case 'all':
+				this._resContainer.find('.online').show();
+				this._resContainer.find('.offline').show();
+				break;
+			case 'online':
+				this._resContainer.find('.online').show();
+				this._resContainer.find('.offline').hide();
+				break;
+			case 'offline':
+				this._resContainer.find('.online').hide();
+				this._resContainer.find('.offline').show();
+				break;
+		}
 	};
 
 	/*
@@ -106,7 +126,7 @@ var TwitchersBuilder = (function () {
 
 	function onReceivedStreamings(json) {
 		buildStreaming.call(this, json);
-		this.runPostStreamings.call(this);
+		this.finishDisplay.call(this);
 	}
 
 	return TwitchersBuilder;
@@ -135,7 +155,7 @@ var RegularsTwitchersBuilder = (function () {
 		return false;
 	}
 
-	RegularsTwitchersBuilder.prototype.runPostStreamings = function () {
+	RegularsTwitchersBuilder.prototype.finishDisplay = function () {
 		this._numMissing = 0;
 
 		var unloaded = [];
@@ -166,7 +186,7 @@ var RegularsTwitchersBuilder = (function () {
 				this.buildEntry.call(this, entry, "Account closed", false);
 			}
 		}
-		this._resContainer.show();
+		TwitchersBuilder.prototype.finishDisplay.call(this);
 	}
 
 	return RegularsTwitchersBuilder;
@@ -179,12 +199,9 @@ var RegularsTwitchersBuilder = (function () {
 var TwitchHandler = (function () {
 	// ctr
 	function TwitchHandler() {
-		this._offset = 0;
-		this._lastJson = {};
-		this._viewType = jQuery("input:radio[name=view]:checked").attr('id');
-
 		this._twitchRegularsBuilder = new RegularsTwitchersBuilder(createListGetter(), createChannelGetter(), REGULARS);
 		this._twitchFeaturedBuilder = new TwitchersBuilder(createFeaturedGetter());
+		this._currentBuilder;
 	}
 
 	// called when the user chooses how to find the twitch streams
@@ -193,23 +210,19 @@ var TwitchHandler = (function () {
 
 		switch(source) {
 			case 'regulars':
-				jQuery(".search-bar").hide();
-				this._twitchRegularsBuilder.reset();
+				this._currentBuilder = this._twitchRegularsBuilder;
 				break;
 			case 'featured':
-				jQuery(".search-bar").hide();
-				this._twitchFeaturedBuilder.reset();
+				this._currentBuilder = this._twitchFeaturedBuilder;
 				break;
 		}
+		this._currentBuilder.reset();
 	};
 
 	// called when the user chooses what twitch streams to display
 	TwitchHandler.prototype.onViewChange = function() {
-		var view = jQuery("input:radio[name=view]:checked").attr('id');
-
-		if (this._viewType !== view) {
-			this._viewType = view;
-			//this.displayTwitchers.call(this, this._lastJson);
+		if (this._currentBuilder) {
+			this._currentBuilder.filterStatus();
 		}
 	};
 

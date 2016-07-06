@@ -107,10 +107,10 @@ body {
 
 	fill: lightgrey;
 }
-.online {
+.online .logo {
 	background-color: green;
 }
-.offline {
+.offline .logo {
 	background-color: red;
 }
 .title {
