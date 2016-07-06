@@ -18,24 +18,22 @@
 		<div class="header">Twitching</div>
 
 		<!-- buttons -->
-		<div class="buttons-drawing">
-			<div class="draw-row">&nbsp;</div>
-			<div class="draw-row">
-				<label>Regulars <input type="radio" id="regulars" name="source" value="regulars" checked="checked" /></label>
-				<span  class="middle-draw"></span>
-				<label>All <input type="radio" id="all" name="view" value="all" checked="checked" /></label>
+		<div class="radio-rows">
+			<div class="radio-row">
+				<input type="radio" id="regulars" name="source" value="regulars" checked="checked" />
+				<label for="regulars">Regulars</label>
+				<input type="radio" id="featured" name="source" value="featured" />
+				<label for="featured">Featured</label>
 			</div>
-			<div class="draw-row">
-				<label>Featured <input type="radio" id="featured" name="source" value="featured" /></label>
-				<span class="middle-draw"></span>
-				<label>Online <input type="radio" id="online" name="view" value="online" /></label>
-			</div>
-			<div class="draw-row">
-				<span class="middle-draw"></span>
-				<label>Offline <input type="radio" id="offline" name="view" value="offline" /></label>
+			<div class="radio-row">
+				<input type="radio" id="all" name="view" value="all" checked="checked" />
+				<label for="all">All </label>
+				<input type="radio" id="online" name="view" value="online" />
+				<label for="online">Online </label>
+				<input type="radio" id="offline" name="view" value="offline" />
+				<label for="offline">Offline </label>
 			</div>
 		</div>
-
 		<!-- Results Container -->
 		<div class="results hidden"></div>
 

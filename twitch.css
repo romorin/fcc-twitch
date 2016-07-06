@@ -37,35 +37,34 @@ body {
 }
 
 /*
-	Buttons drawing
+	Buttons
 */
+.radio-rows,
+.radio-row {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	align-content: center;
+}
+.radio-row {
+	margin: 0 20px;
+}
+.radio-row input {
+    display:none;
+}
+.radio-row label {
+	cursor: pointer;
+	margin: 10px 0;
 
-.buttons-drawing {
-	text-align: center;
-	margin: 10px auto;
-	max-width: 800px;
+	color: #ffffff;
+	background: #707070;
+	padding: 6px 20px 6px 20px;
+	border: solid #303030 1px;
+	text-decoration: none;
 }
-.draw-row {
-	height: 25px;
+.radio-row input:checked + label {
+    background: green;
 }
-.draw-row:nth-child(1) {
-	margin: 0 auto;
-	width: 100%;
-	background-color: brown;
-}
-.draw-row:nth-child(2) {
-	margin: 0 10%;
-	background-color: red;
-}
-.draw-row:nth-child(3) {
-	margin: 0 20%;
-	background-color: orange;
-}
-.draw-row:nth-child(4) {
-	margin: 0 30%;
-	background-color: yellow;
-}
-
 /*
 	Result listings
 */
