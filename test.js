@@ -107,245 +107,156 @@ var TEST_TWITCH_LIST_JSON = {
 };
 
 var TEST_TWITCH_FEATURED_JSON = {
-  "_total": 12345,
-  "streams": [
-    {
-      "game": "StarCraft",
-      "viewers": 2123,
-      "average_fps": 29.9880749574,
-      "delay": 0,
-      "video_height": 720,
-      "is_playlist": false,
-      "created_at": "2015-02-12T04:42:31Z",
-      "_id": 4989654544,
-      "channel": {
-        "mature": false,
-        "status": "test status",
-        "broadcaster_language": "en",
-        "display_name": "test_channel_2",
-        "game": "StarCraft",
-        "delay": null,
-        "language": "en",
-        "_id": 12345,
-        "name": "test_channel",
-        "created_at": "2007-05-22T10:39:54Z",
-        "updated_at": "2015-02-12T04:15:49Z",
-        "logo": "http://static-cdn.jtvnw.net/jtv_user_pictures/test_channel-profile_image-94a42b3a13c31c02-300x300.jpeg",
-        "banner": "http://static-cdn.jtvnw.net/jtv_user_pictures/test_channel-channel_header_image-08dd874c17f39837-640x125.png",
-        "video_banner": "http://static-cdn.jtvnw.net/jtv_user_pictures/test_channel-channel_offline_image-b314c834d210dc1a-640x360.png",
-        "background": null,
-        "profile_banner": "http://static-cdn.jtvnw.net/jtv_user_pictures/test_channel-profile_banner-6936c61353e4aeed-480.png",
-        "profile_banner_background_color": "null",
-        "partner": true,
-        "url": "http://www.twitch.tv/test_channel",
-        "views": 49144894,
-        "followers": 215780,
-        "_links": {
-          "self": "https://api.twitch.tv/kraken/channels/test_channel",
-          "follows": "https://api.twitch.tv/kraken/channels/test_channel/follows",
-          "commercial": "https://api.twitch.tv/kraken/channels/test_channel/commercial",
-          "stream_key": "https://api.twitch.tv/kraken/channels/test_channel/stream_key",
-          "chat": "https://api.twitch.tv/kraken/chat/test_channel",
-          "features": "https://api.twitch.tv/kraken/channels/test_channel/features",
-          "subscriptions": "https://api.twitch.tv/kraken/channels/test_channel/subscriptions",
-          "editors": "https://api.twitch.tv/kraken/channels/test_channel/editors",
-          "teams": "https://api.twitch.tv/kraken/channels/test_channel/teams",
-          "videos": "https://api.twitch.tv/kraken/channels/test_channel/videos"
-        }
-      },
-      "preview": {
-        "small": "http://static-cdn.jtvnw.net/previews-ttv/live_user_test_channel-80x45.jpg",
-        "medium": "http://static-cdn.jtvnw.net/previews-ttv/live_user_test_channel-320x180.jpg",
-        "large": "http://static-cdn.jtvnw.net/previews-ttv/live_user_test_channel-640x360.jpg",
-        "template": "http://static-cdn.jtvnw.net/previews-ttv/live_user_test_channel-{width}x{height}.jpg"
-      },
-      "_links": {
-        "self": "https://api.twitch.tv/kraken/streams/test_channel"
-      }
-    },
-    {
-      "game": "StarCraft",
-      "viewers": 2123,
-      "average_fps": 29.9880749574,
-      "delay": 0,
-      "video_height": 720,
-      "is_playlist": false,
-      "created_at": "2015-02-12T04:42:31Z",
-      "_id": 4989654544,
-      "channel": {
-        "mature": false,
-        "status": "test status Lorem ipsum dolor sit amet, consecteteur adipiscing elit vulputate mi, ac ve. Et consectetuer aliquet fames diam posuere et. Tristique facilisi orci varius in facilisi mollis. Potenti dui adipiscing. Nisi. Aenean. Dapibus mi magnis rhoncus conubia tristique facilisi suscipit neque velit facilisi mus, integer eni. Ad ut magna tellus sollicitudin posuere. Nunc gravida tincidunt diam fames blandit arcu sapien. Adipiscing nisi risus blandit fusce non diam hymenaeos mauris diam cum.",
-        "broadcaster_language": "en",
-        "display_name": "test_channel_2",
-        "game": "StarCraft",
-        "delay": null,
-        "language": "en",
-        "_id": 12345,
-        "name": "test_channel",
-        "created_at": "2007-05-22T10:39:54Z",
-        "updated_at": "2015-02-12T04:15:49Z",
-        "logo": "http://static-cdn.jtvnw.net/jtv_user_pictures/test_channel-profile_image-94a42b3a13c31c02-300x300.jpeg",
-        "banner": "http://static-cdn.jtvnw.net/jtv_user_pictures/test_channel-channel_header_image-08dd874c17f39837-640x125.png",
-        "video_banner": "http://static-cdn.jtvnw.net/jtv_user_pictures/test_channel-channel_offline_image-b314c834d210dc1a-640x360.png",
-        "background": null,
-        "profile_banner": "http://static-cdn.jtvnw.net/jtv_user_pictures/test_channel-profile_banner-6936c61353e4aeed-480.png",
-        "profile_banner_background_color": "null",
-        "partner": true,
-        "url": "http://www.twitch.tv/test_channel",
-        "views": 49144894,
-        "followers": 215780,
-        "_links": {
-          "self": "https://api.twitch.tv/kraken/channels/test_channel",
-          "follows": "https://api.twitch.tv/kraken/channels/test_channel/follows",
-          "commercial": "https://api.twitch.tv/kraken/channels/test_channel/commercial",
-          "stream_key": "https://api.twitch.tv/kraken/channels/test_channel/stream_key",
-          "chat": "https://api.twitch.tv/kraken/chat/test_channel",
-          "features": "https://api.twitch.tv/kraken/channels/test_channel/features",
-          "subscriptions": "https://api.twitch.tv/kraken/channels/test_channel/subscriptions",
-          "editors": "https://api.twitch.tv/kraken/channels/test_channel/editors",
-          "teams": "https://api.twitch.tv/kraken/channels/test_channel/teams",
-          "videos": "https://api.twitch.tv/kraken/channels/test_channel/videos"
-        }
-      },
-      "preview": {
-        "small": "http://static-cdn.jtvnw.net/previews-ttv/live_user_test_channel-80x45.jpg",
-        "medium": "http://static-cdn.jtvnw.net/previews-ttv/live_user_test_channel-320x180.jpg",
-        "large": "http://static-cdn.jtvnw.net/previews-ttv/live_user_test_channel-640x360.jpg",
-        "template": "http://static-cdn.jtvnw.net/previews-ttv/live_user_test_channel-{width}x{height}.jpg"
-      },
-      "_links": {
-        "self": "https://api.twitch.tv/kraken/streams/test_channel"
-      }
-    },
-    {
-      "game": "StarCraft",
-      "viewers": 2123,
-      "average_fps": 29.9880749574,
-      "delay": 0,
-      "video_height": 720,
-      "is_playlist": false,
-      "created_at": "2015-02-12T04:42:31Z",
-      "_id": 4989654544,
-      "channel": {
-        "mature": false,
-        "status": "test status",
-        "broadcaster_language": "en",
-        "display_name": "test_channel_2",
-        "game": "StarCraft",
-        "delay": null,
-        "language": "en",
-        "_id": 12345,
-        "name": "test_channel",
-        "created_at": "2007-05-22T10:39:54Z",
-        "updated_at": "2015-02-12T04:15:49Z",
-        "logo": "http://static-cdn.jtvnw.net/jtv_user_pictures/test_channel-profile_image-94a42b3a13c31c02-300x300.jpeg",
-        "banner": "http://static-cdn.jtvnw.net/jtv_user_pictures/test_channel-channel_header_image-08dd874c17f39837-640x125.png",
-        "video_banner": "http://static-cdn.jtvnw.net/jtv_user_pictures/test_channel-channel_offline_image-b314c834d210dc1a-640x360.png",
-        "background": null,
-        "profile_banner": "http://static-cdn.jtvnw.net/jtv_user_pictures/test_channel-profile_banner-6936c61353e4aeed-480.png",
-        "profile_banner_background_color": "null",
-        "partner": true,
-        "url": "http://www.twitch.tv/test_channel",
-        "views": 49144894,
-        "followers": 215780,
-        "_links": {
-          "self": "https://api.twitch.tv/kraken/channels/test_channel",
-          "follows": "https://api.twitch.tv/kraken/channels/test_channel/follows",
-          "commercial": "https://api.twitch.tv/kraken/channels/test_channel/commercial",
-          "stream_key": "https://api.twitch.tv/kraken/channels/test_channel/stream_key",
-          "chat": "https://api.twitch.tv/kraken/chat/test_channel",
-          "features": "https://api.twitch.tv/kraken/channels/test_channel/features",
-          "subscriptions": "https://api.twitch.tv/kraken/channels/test_channel/subscriptions",
-          "editors": "https://api.twitch.tv/kraken/channels/test_channel/editors",
-          "teams": "https://api.twitch.tv/kraken/channels/test_channel/teams",
-          "videos": "https://api.twitch.tv/kraken/channels/test_channel/videos"
-        }
-      },
-      "preview": {
-        "small": "http://static-cdn.jtvnw.net/previews-ttv/live_user_test_channel-80x45.jpg",
-        "medium": "http://static-cdn.jtvnw.net/previews-ttv/live_user_test_channel-320x180.jpg",
-        "large": "http://static-cdn.jtvnw.net/previews-ttv/live_user_test_channel-640x360.jpg",
-        "template": "http://static-cdn.jtvnw.net/previews-ttv/live_user_test_channel-{width}x{height}.jpg"
-      },
-      "_links": {
-        "self": "https://api.twitch.tv/kraken/streams/test_channel"
-      }
-    },
-    {
-      "game": "StarCraft",
-      "viewers": 2123,
-      "average_fps": 29.9880749574,
-      "delay": 0,
-      "video_height": 720,
-      "is_playlist": false,
-      "created_at": "2015-02-12T04:42:31Z",
-      "_id": 4989654544,
-      "channel": {
-        "mature": false,
-        "status": "test status",
-        "broadcaster_language": "en",
-        "display_name": "test_channel_2",
-        "game": "StarCraft",
-        "delay": null,
-        "language": "en",
-        "_id": 12345,
-        "name": "test_channel",
-        "created_at": "2007-05-22T10:39:54Z",
-        "updated_at": "2015-02-12T04:15:49Z",
-        "logo": "http://static-cdn.jtvnw.net/jtv_user_pictures/test_channel-profile_image-94a42b3a13c31c02-300x300.jpeg",
-        "banner": "http://static-cdn.jtvnw.net/jtv_user_pictures/test_channel-channel_header_image-08dd874c17f39837-640x125.png",
-        "video_banner": "http://static-cdn.jtvnw.net/jtv_user_pictures/test_channel-channel_offline_image-b314c834d210dc1a-640x360.png",
-        "background": null,
-        "profile_banner": "http://static-cdn.jtvnw.net/jtv_user_pictures/test_channel-profile_banner-6936c61353e4aeed-480.png",
-        "profile_banner_background_color": "null",
-        "partner": true,
-        "url": "http://www.twitch.tv/test_channel",
-        "views": 49144894,
-        "followers": 215780,
-        "_links": {
-          "self": "https://api.twitch.tv/kraken/channels/test_channel",
-          "follows": "https://api.twitch.tv/kraken/channels/test_channel/follows",
-          "commercial": "https://api.twitch.tv/kraken/channels/test_channel/commercial",
-          "stream_key": "https://api.twitch.tv/kraken/channels/test_channel/stream_key",
-          "chat": "https://api.twitch.tv/kraken/chat/test_channel",
-          "features": "https://api.twitch.tv/kraken/channels/test_channel/features",
-          "subscriptions": "https://api.twitch.tv/kraken/channels/test_channel/subscriptions",
-          "editors": "https://api.twitch.tv/kraken/channels/test_channel/editors",
-          "teams": "https://api.twitch.tv/kraken/channels/test_channel/teams",
-          "videos": "https://api.twitch.tv/kraken/channels/test_channel/videos"
-        }
-      },
-      "preview": {
-        "small": "http://static-cdn.jtvnw.net/previews-ttv/live_user_test_channel-80x45.jpg",
-        "medium": "http://static-cdn.jtvnw.net/previews-ttv/live_user_test_channel-320x180.jpg",
-        "large": "http://static-cdn.jtvnw.net/previews-ttv/live_user_test_channel-640x360.jpg",
-        "template": "http://static-cdn.jtvnw.net/previews-ttv/live_user_test_channel-{width}x{height}.jpg"
-      },
-      "_links": {
-        "self": "https://api.twitch.tv/kraken/streams/test_channel"
-      }
-    }
-  ],
-  "_links": {
-    "summary": "https://api.twitch.tv/kraken/streams/summary",
-    "followed": "https://api.twitch.tv/kraken/streams/followed",
-    "next": "https://api.twitch.tv/kraken/streams?channel=test_channel%2Ctest_channel2&game=StarCraft+II%3A+Heart+of+the+Swarm&limit=100&offset=100",
-    "featured": "https://api.twitch.tv/kraken/streams/featured",
-    "self": "https://api.twitch.tv/kraken/streams?channel=test_channel%2Ctest_channel2&game=StarCraft+II%3A+Heart+of+the+Swarm&limit=100&offset=0"
-  }
+	"_links": {
+		"self": "https://api.twitch.tv/kraken/streams/featured?limit=2&offset=0",
+		"next": "https://api.twitch.tv/kraken/streams/featured?limit=2&offset=2"
+	},
+	"featured": [{
+		"text": "<p>Summer Games Done Quick 2016 ist ein Speedrunning-Marathon zu Gunsten der Doctors Without Borders. Schaut vom dritten bis zum zehnten Januar über 130 Stunden an Speedruns und unterstützt dabei einen wohltätigen Zweck.</p>\n\n<br>\n\n\n<p><a href=\"/germenchrestream\">Klick hier</a> um zuzuschauen und zu chatten.</p>\n",
+		"title": "Summer Games Done Quick 2016 (German)",
+		"sponsored": false,
+		"priority": 2,
+		"scheduled": true,
+		"image": "https://s.jtvnw.net/jtv_user_pictures/hosted_images/gdq-twitch-german_72015.png",
+		"stream": {
+			"_id": 22212231792,
+			"game": "Tetris: The Grand Master",
+			"viewers": 1115,
+			"video_height": 720,
+			"average_fps": 60.5597964377,
+			"delay": 0,
+			"created_at": "2016-07-07T00:00:45Z",
+			"is_playlist": false,
+			"preview": {
+				"small": "https://static-cdn.jtvnw.net/previews-ttv/live_user_germenchrestream-80x45.jpg",
+				"medium": "https://static-cdn.jtvnw.net/previews-ttv/live_user_germenchrestream-320x180.jpg",
+				"large": "https://static-cdn.jtvnw.net/previews-ttv/live_user_germenchrestream-640x360.jpg",
+				"template": "https://static-cdn.jtvnw.net/previews-ttv/live_user_germenchrestream-{width}x{height}.jpg"
+			},
+			"_links": {
+				"self": "https://api.twitch.tv/kraken/streams/germenchrestream"
+			},
+			"channel": {
+				"mature": false,
+				"status": "[GER] SGDQ 2016 German Restream: Tetris: The Grand Master Series Exhibition",
+				"broadcaster_language": "de",
+				"display_name": "GermenchRestream",
+				"game": "Tetris: The Grand Master",
+				"language": "de",
+				"_id": 68240113,
+				"name": "germenchrestream",
+				"created_at": "2014-08-05T17:01:55Z",
+				"updated_at": "2016-07-07T19:12:04Z",
+				"delay": null,
+				"logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/germenchrestream-profile_image-0e606dbe21947315-300x300.png",
+				"banner": null,
+				"video_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/germenchrestream-channel_offline_image-6caa023d41b731ef-1920x1080.png",
+				"background": null,
+				"profile_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/germenchrestream-profile_banner-97b08d58f981929d-480.png",
+				"profile_banner_background_color": null,
+				"partner": false,
+				"url": "https://www.twitch.tv/germenchrestream",
+				"views": 3286358,
+				"followers": 11992,
+				"_links": {
+					"self": "https://api.twitch.tv/kraken/channels/germenchrestream",
+					"follows": "https://api.twitch.tv/kraken/channels/germenchrestream/follows",
+					"commercial": "https://api.twitch.tv/kraken/channels/germenchrestream/commercial",
+					"stream_key": "https://api.twitch.tv/kraken/channels/germenchrestream/stream_key",
+					"chat": "https://api.twitch.tv/kraken/chat/germenchrestream",
+					"features": "https://api.twitch.tv/kraken/channels/germenchrestream/features",
+					"subscriptions": "https://api.twitch.tv/kraken/channels/germenchrestream/subscriptions",
+					"editors": "https://api.twitch.tv/kraken/channels/germenchrestream/editors",
+					"teams": "https://api.twitch.tv/kraken/channels/germenchrestream/teams",
+					"videos": "https://api.twitch.tv/kraken/channels/germenchrestream/videos"
+				}
+			}
+		}
+	}, {
+		"text": "<p>Die ESL One Cologne kehrt zurück in die LANXESS Arena! Das ist das Counter-Strike: Global Offensive-Event überhaupt, das ihr nicht verpassen dürft. Erlebe erstklassige CS:GO-Action vor einer unglaublichen Crowd über sechs Tage.</p>\n",
+		"title": "ESL One Cologne",
+		"sponsored": false,
+		"priority": 2,
+		"scheduled": true,
+		"image": "https://s.jtvnw.net/jtv_user_pictures/hosted_images/esl_99damage_fp_ESLOne_German.jpg",
+		"stream": {
+			"_id": 22217807680,
+			"game": "Counter-Strike: Global Offensive",
+			"viewers": 5905,
+			"video_height": 720,
+			"average_fps": 60.8571428571,
+			"delay": 0,
+			"created_at": "2016-07-07T08:50:07Z",
+			"is_playlist": false,
+			"preview": {
+				"small": "https://static-cdn.jtvnw.net/previews-ttv/live_user_esl_99damage-80x45.jpg",
+				"medium": "https://static-cdn.jtvnw.net/previews-ttv/live_user_esl_99damage-320x180.jpg",
+				"large": "https://static-cdn.jtvnw.net/previews-ttv/live_user_esl_99damage-640x360.jpg",
+				"template": "https://static-cdn.jtvnw.net/previews-ttv/live_user_esl_99damage-{width}x{height}.jpg"
+			},
+			"_links": {
+				"self": "https://api.twitch.tv/kraken/streams/esl_99damage"
+			},
+			"channel": {
+				"mature": false,
+				"status": "ESL One Cologne 2016 - German Stream by 99damage.de",
+				"broadcaster_language": "de",
+				"display_name": "esl_99damage",
+				"game": "Counter-Strike: Global Offensive",
+				"language": "de",
+				"_id": 82310452,
+				"name": "esl_99damage",
+				"created_at": "2015-02-10T14:10:01Z",
+				"updated_at": "2016-07-07T19:04:09Z",
+				"delay": null,
+				"logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/esl_99damage-profile_image-d718503148f24963-300x300.png",
+				"banner": null,
+				"video_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/esl_99damage-channel_offline_image-93a8d4b63cb53a55-1920x1080.png",
+				"background": null,
+				"profile_banner": null,
+				"profile_banner_background_color": null,
+				"partner": true,
+				"url": "https://www.twitch.tv/esl_99damage",
+				"views": 6505479,
+				"followers": 57622,
+				"_links": {
+					"self": "https://api.twitch.tv/kraken/channels/esl_99damage",
+					"follows": "https://api.twitch.tv/kraken/channels/esl_99damage/follows",
+					"commercial": "https://api.twitch.tv/kraken/channels/esl_99damage/commercial",
+					"stream_key": "https://api.twitch.tv/kraken/channels/esl_99damage/stream_key",
+					"chat": "https://api.twitch.tv/kraken/chat/esl_99damage",
+					"features": "https://api.twitch.tv/kraken/channels/esl_99damage/features",
+					"subscriptions": "https://api.twitch.tv/kraken/channels/esl_99damage/subscriptions",
+					"editors": "https://api.twitch.tv/kraken/channels/esl_99damage/editors",
+					"teams": "https://api.twitch.tv/kraken/channels/esl_99damage/teams",
+					"videos": "https://api.twitch.tv/kraken/channels/esl_99damage/videos"
+				}
+			}
+		}
+	}]
 };
 
 var TestApiGetter = (function () {
-	function TestApiGetter(json) {
+	// results = array of: s for success or f for fail
+	function TestApiGetter(json, results) {
 		ApiGetter.call();
 		this._json = json;
+		this._results = results;
 	}
 
 	TestApiGetter.prototype = Object.create(ApiGetter.prototype);
 	TestApiGetter.prototype.constructor = TestApiGetter;
 
-	TestApiGetter.prototype.fetch = function(handler) {
-		return handler(this._json);
+	// handlers : {onDone: fct, onFail: fct, always: fct}
+	TestApiGetter.prototype.fetch = function(handlers) {
+		var result = 's';
+		if (this._results && this._results.length > 0) {
+			result = this._results.shift();
+		}
+
+		if (result === 's' && handlers.onDone) { handlers.onDone(this._json);}
+		if (result === 'f' && handlers.onFail) { handlers.onFail(this._json);}
+		if (handlers.always) { handlers.always(this._json);}
 	};
 
 	return TestApiGetter;

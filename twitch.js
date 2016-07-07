@@ -1,19 +1,61 @@
+/*jshint esversion: 6 */
 
-var LIST_STEP = 10;
-
-var REGULARS = ["ESL_SC2", "OgamingSC2", "cretetion", "freecodecamp", "storbeck", "habathcx", "RobotCaleb", "noobs2ninjas"];
+var REGULARS = ["ESL_SC2", "OgamingSC2", "cretetion", "freecodecamp", "storbeck" , "habathcx", "RobotCaleb", "noobs2ninjas", "brunofin", "comster404"];
 
 // Api handler configuration
-var createListGetter = function () { return new TestApiGetter(TEST_TWITCH_LIST_JSON); };
-var createChannelGetter = function () { return new TestApiGetter(TEST_TWITCH_CHANNEL_ERROR_JSON); };
-var createFeaturedGetter = function () { return new TestApiGetter(TEST_TWITCH_FEATURED_JSON); };
+/*var createListGetter = function () { return new TestApiGetter(TEST_TWITCH_LIST_JSON ); };
+var createChannelGetter = function () { return new TestApiGetter(TEST_TWITCH_CHANNEL_JSON ); };
+var createFeaturedGetter = function () { return new TestApiGetter(TEST_TWITCH_FEATURED_JSON ); };*/
+
+var createListGetter = function () { return new RealApiGetter(generateRegularsQueryUrl); };
+var createChannelGetter = function () { return new RealApiGetter(generateChannelQueryUrl); };
+var createFeaturedGetter = function () { return new RealApiGetter(generateFeaturedQueryUrl); };
+
+function generateFeaturedQueryUrl() {
+	return "https://api.twitch.tv/kraken/streams/featured";
+}
+
+function generateRegularsQueryUrl() {
+	var queryUrl = "https://api.twitch.tv/kraken/streams?channel=";
+
+	REGULARS.forEach( function(entry, i) {
+		if (i > 0) {
+			queryUrl += ',';
+		}
+		queryUrl += encodeURIComponent(entry);
+	});
+	return queryUrl;
+}
+
+function generateChannelQueryUrl(channel) {
+	return "https://api.twitch.tv/kraken/channels/" + encodeURIComponent(channel);
+}
+
+var RealApiGetter = (function () {
+	function RealApiGetter(urlGenerator) {
+		this._urlGenerator = urlGenerator;
+	}
+
+	// handlers : {onDone: fct, onFail: fct, always: fct}
+	RealApiGetter.prototype.fetch = function(handlers, ...generatorArgs) {
+		var request = jQuery.getJSON(this._urlGenerator(generatorArgs));
+
+		if (handlers.onDone) { request.done(handlers.onDone);}
+		if (handlers.onFail) { request.fail(handlers.onFail);}
+		if (handlers.always) { request.always(handlers.always);}
+	};
+
+	return RealApiGetter;
+})();
 
 var TwitchersBuilder = (function () {
 	/*
 		Public
 	*/
-	function TwitchersBuilder(urlGetter) {
+	function TwitchersBuilder(urlGetter, elemPath, channelPath) {
 		this._urlGetter = urlGetter;
+		this._elemPath = elemPath;
+		this._channelPath = channelPath;
 
 		this._resContainer = jQuery(".results");
 		this._resTemplate = jQuery(jQuery("#result-template").html());
@@ -23,10 +65,16 @@ var TwitchersBuilder = (function () {
 
 	TwitchersBuilder.prototype.reset = function() {
 		// flush old results
+		this._resContainer.hide();
 		this._resContainer.empty();
 		this._loadedTwichers = [];
 
-		this._urlGetter.fetch(onReceivedStreamings.bind(this));
+		this._urlGetter.fetch({
+			'onDone' : function (json) {
+				buildFromStreams.call(this, json);
+				this.finishDisplay.call(this);
+			}.bind(this)}
+		);
 	};
 
 	/*
@@ -104,29 +152,35 @@ var TwitchersBuilder = (function () {
 		}
 	};
 
+	function getNested(json, path) {
+		var parr = path.split('.');
+		var elem = json;
+		for (var i = 0; i < parr.length; i++) {
+			elem = elem[parr[i]];
+			if (!elem) {return null;}
+		}
+		return elem;
+	}
+
 	/*
 		Private
 	*/
-	function buildStreaming(json) {
-		if ( !('streams' in json) || (Array.isArray && !Array.isArray(json.streams) ) ) {
+	function buildFromStreams(json) {
+		var streams = getNested(json, this._elemPath);
+		if ( streams === null || (Array.isArray && !Array.isArray(streams) ) ) {
 			return;
 		}
-		var streams = json.streams;
 
 		// array of the online streamers
-		for (var i = 0; i < streams.length; i++) {
+		streams.forEach(function (entry, i) {
 			// skip invalid result
-			if (!(streams.hasOwnProperty(i)) || !('channel' in streams[i])) {
-				continue;
+			var channel = getNested(streams[i], this._channelPath);
+			if ( channel === null ) {
+				return;
 			}
 			// clone the template and fill the blanks
-			this.buildChannel(streams[i].channel, true);
-		}
-	}
-
-	function onReceivedStreamings(json) {
-		buildStreaming.call(this, json);
-		this.finishDisplay.call(this);
+			this.buildChannel(channel, true);
+		}, this);
 	}
 
 	return TwitchersBuilder;
@@ -134,8 +188,8 @@ var TwitchersBuilder = (function () {
 
 var RegularsTwitchersBuilder = (function () {
 	// ctr
-	function RegularsTwitchersBuilder(listGetter, channelGetter, list) {
-		TwitchersBuilder.call(this, listGetter);
+	function RegularsTwitchersBuilder(listGetter, elemPath, channelPath, channelGetter, list) {
+		TwitchersBuilder.call(this, listGetter, elemPath, channelPath);
 
 		this._channelGetter = channelGetter;
 		this._list = list;
@@ -145,48 +199,51 @@ var RegularsTwitchersBuilder = (function () {
 	RegularsTwitchersBuilder.prototype = Object.create(TwitchersBuilder.prototype);
 	RegularsTwitchersBuilder.prototype.constructor = RegularsTwitchersBuilder;
 
+	RegularsTwitchersBuilder.prototype.finishDisplay = function () {
+		this._numMissing = 0;
+
+		var unloaded = [];
+		this._list.forEach(function(entry) {
+			if (!isLoaded.call(this, entry)) {
+				unloaded.push(entry);
+			}
+		}, this);
+		unloaded.forEach(function(entry){
+			this._channelGetter.fetch({
+				'onDone' : function (json) {
+					if (!this.buildChannel(json, false)) {
+						this._numMissing++;
+					}
+				}.bind(this),
+				'onFail' : function (json) {
+					this._numMissing++;
+				}.bind(this),
+				'always' : function (json) {
+					checkReceivedAll.call(this);
+				}.bind(this)
+			}, entry);
+		}, this);
+	};
+
 	// case gets modified my the api
 	function isLoaded(name) {
-		for (var j = 0; j < this._loadedTwichers.length; j++) {
-			if (name.toLowerCase() === this._loadedTwichers[j].toLowerCase()) {
+		for(var i = 0; i < this._loadedTwichers.length; i++) {
+			if (name.toLowerCase() === this._loadedTwichers[i].toLowerCase()) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	RegularsTwitchersBuilder.prototype.finishDisplay = function () {
-		this._numMissing = 0;
-
-		var unloaded = [];
-		for (var i = 0; i < this._list.length; i++) {
-			if (!isLoaded.call(this, this._list[i])) {
-				unloaded.push(this._list[i]);
-			}
-		}
-		for (i = 0; i < unloaded.length; i++) {
-			this._channelGetter.fetch(onReceivedChannel.bind(this), unloaded[i]);
-		}
-	};
-
-	function onReceivedChannel(json) {
-		if (!this.buildChannel(json, false)) {
-			this._numMissing++;
-		}
+	function checkReceivedAll() {
 		if ((this._loadedTwichers.length + this._numMissing) >= this._list.length) {
-			buildMissings.call(this);
-			this._resContainer.show();
+			this._list.forEach(function (entry) {
+				if (!isLoaded.call(this, entry)) {
+					this.buildEntry.call(this, entry, "Account closed", false);
+				}
+			}, this);
+			TwitchersBuilder.prototype.finishDisplay.call(this);
 		}
-	}
-
-	function buildMissings() {
-		for (var i = 0; i < this._list.length; i++) {
-			var entry = this._list[i];
-			if (!isLoaded.call(this, entry)) {
-				this.buildEntry.call(this, entry, "Account closed", false);
-			}
-		}
-		TwitchersBuilder.prototype.finishDisplay.call(this);
 	}
 
 	return RegularsTwitchersBuilder;
@@ -199,9 +256,9 @@ var RegularsTwitchersBuilder = (function () {
 var TwitchHandler = (function () {
 	// ctr
 	function TwitchHandler() {
-		this._twitchRegularsBuilder = new RegularsTwitchersBuilder(createListGetter(), createChannelGetter(), REGULARS);
-		this._twitchFeaturedBuilder = new TwitchersBuilder(createFeaturedGetter());
-		this._currentBuilder;
+		this._twitchRegularsBuilder = new RegularsTwitchersBuilder(createListGetter(), 'streams', 'channel',
+			createChannelGetter(), REGULARS);
+		this._twitchFeaturedBuilder = new TwitchersBuilder(createFeaturedGetter(), 'featured', 'stream.channel');
 	}
 
 	// called when the user chooses how to find the twitch streams

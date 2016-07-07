@@ -1,7 +1,8 @@
 var ApiGetter = (function () {
 	function ApiGetter() {}
 
-	ApiGetter.prototype.fetch = function(handler) {};
+	// handlers : {onDone: fct, onFail: fct, always: fct}
+	ApiGetter.prototype.fetch = function(handlers) {};
 
 	return ApiGetter;
 })();
