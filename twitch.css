@@ -17,7 +17,7 @@ body {
 	Main components
 */
 .header {
-	font-size: 5rem;
+	font-size: 7rem;
 	margin-top: 100px;
 	margin-bottom: 50px;
 	text-align: center;
@@ -45,6 +45,9 @@ body {
 	justify-content: center;
 	align-items: center;
 	align-content: center;
+}
+.radio-rows {
+	flex-wrap: wrap;
 }
 .radio-row {
 	margin: 0 20px;
@@ -144,8 +147,8 @@ body {
 	text-decoration: none;
 }
 
-@media all and (max-width: 320px) {
-	.header {
-		font-size: 25vw;
-	}
+@media all and (max-width: 620px) {
+       .header {
+               font-size: 18vw;
+       }
 }

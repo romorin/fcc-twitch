@@ -3,13 +3,13 @@
 var REGULARS = ["ESL_SC2", "OgamingSC2", "cretetion", "freecodecamp", "storbeck" , "habathcx", "RobotCaleb", "noobs2ninjas", "brunofin", "comster404"];
 
 // Api handler configuration
-/*var createListGetter = function () { return new TestApiGetter(TEST_TWITCH_LIST_JSON ); };
+var createListGetter = function () { return new TestApiGetter(TEST_TWITCH_LIST_JSON ); };
 var createChannelGetter = function () { return new TestApiGetter(TEST_TWITCH_CHANNEL_JSON ); };
 var createFeaturedGetter = function () { return new TestApiGetter(TEST_TWITCH_FEATURED_JSON ); };
-*/
+/*
 var createListGetter = function () { return new RealApiGetter(generateRegularsQueryUrl); };
 var createChannelGetter = function () { return new RealApiGetter(generateChannelQueryUrl); };
-var createFeaturedGetter = function () { return new RealApiGetter(generateFeaturedQueryUrl); };
+var createFeaturedGetter = function () { return new RealApiGetter(generateFeaturedQueryUrl); };*/
 
 function generateFeaturedQueryUrl() {
 	return "https://api.twitch.tv/kraken/streams/featured";
