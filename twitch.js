@@ -3,13 +3,17 @@
 var REGULARS = ["ESL_SC2", "OgamingSC2", "cretetion", "freecodecamp", "storbeck" , "habathcx", "RobotCaleb", "noobs2ninjas", "brunofin", "comster404"];
 
 // Api handler configuration
-var createListGetter = function () { return new TestApiGetter(TEST_TWITCH_LIST_JSON ); };
+/*var createListGetter = function () { return new TestApiGetter(TEST_TWITCH_LIST_JSON ); };
 var createChannelGetter = function () { return new TestApiGetter(TEST_TWITCH_CHANNEL_JSON ); };
 var createFeaturedGetter = function () { return new TestApiGetter(TEST_TWITCH_FEATURED_JSON ); };
-/*
+*/
 var createListGetter = function () { return new RealApiGetter(generateRegularsQueryUrl); };
 var createChannelGetter = function () { return new RealApiGetter(generateChannelQueryUrl); };
-var createFeaturedGetter = function () { return new RealApiGetter(generateFeaturedQueryUrl); };*/
+var createFeaturedGetter = function () { return new RealApiGetter(generateFeaturedQueryUrl); };
+
+/*********************************************************
+	Url generators
+*********************************************************/
 
 function generateFeaturedQueryUrl() {
 	return "https://api.twitch.tv/kraken/streams/featured";
@@ -31,12 +35,28 @@ function generateChannelQueryUrl(channel) {
 	return "https://api.twitch.tv/kraken/channels/" + encodeURIComponent(channel);
 }
 
+/*
+	Gets json from the url specified by its member generator
+*/
 var RealApiGetter = (function () {
+	/*
+		Ctr
+
+		@param urlGenerator	the generator function
+	*/
 	function RealApiGetter(urlGenerator) {
 		this._urlGenerator = urlGenerator;
 	}
 
-	// handlers : {onDone: fct, onFail: fct, always: fct}
+	/*
+		Get json from its url and call the appropriate callbacks
+
+		@param handlers : {onDone: fct, onFail: fct, always: fct}
+			the handlers to call after received the data
+
+		@param ...generatorArgs
+			the arguments required by the generator
+	*/
 	RealApiGetter.prototype.fetch = function(handlers, ...generatorArgs) {
 		var request = jQuery.getJSON(this._urlGenerator(generatorArgs));
 
@@ -48,9 +68,24 @@ var RealApiGetter = (function () {
 	return RealApiGetter;
 })();
 
+/*********************************************************
+	TwitchersBuilder
+
+	Manage the display from a list of streams fetched from the url getter
+*********************************************************/
+
 var TwitchersBuilder = (function () {
+
+	//////////////////////////////////////////////////
+	// Public
+
 	/*
-		Public
+		Constructor
+
+		@param urlGetter		the source for the json data
+		@param listPath		the path from the base json to the entry list
+		@param streamPath		the path from the entry list json to the stream
+		@param channelPath	the path from the stream json to the channel
 	*/
 	function TwitchersBuilder(urlGetter, listPath, streamPath, channelPath) {
 		this._urlGetter = urlGetter;
@@ -64,12 +99,16 @@ var TwitchersBuilder = (function () {
 		this._loadedTwichers = [];
 	}
 
+	/*
+		Clears the displayed entries and display a new list of streams from the generator
+	*/
 	TwitchersBuilder.prototype.reset = function() {
 		// flush old results
 		this._resContainer.hide();
 		this._resContainer.empty();
 		this._loadedTwichers = [];
 
+		// fetch the streams
 		this._urlGetter.fetch({
 			'onDone' : function (json) {
 				buildFromStreams.call(this, json);
@@ -78,8 +117,16 @@ var TwitchersBuilder = (function () {
 		);
 	};
 
+	////////////////////////////////////////
+	// Internal
+
 	/*
-		Protected
+		Apply the stream json to the specified template
+
+		@param template	the template node to change
+		@param stream		the source stream json
+
+		@returns if the template could be applied
 	*/
 	TwitchersBuilder.prototype.buildStream = function(template, stream) {
 		var channel = getNested(stream, this._channelPath);
@@ -93,6 +140,15 @@ var TwitchersBuilder = (function () {
 		return this.buildChannel.call(this, template, channel, true);
 	};
 
+	/*
+		Apply the channel json to the specified template
+
+		@param template	the template node to change
+		@param channel		the source channel json
+		@param isOnline	wether the channel is streaming
+
+		@returns if the template could be applied
+	*/
 	TwitchersBuilder.prototype.buildChannel = function(template, channel, isOnline) {
 		if(!('logo' in channel) || !('name' in channel) ||
 			!('status' in channel) || !('url' in channel)) {
@@ -123,6 +179,16 @@ var TwitchersBuilder = (function () {
 		return this.buildEntry.call(this, template, channel.name, isOnline);
 	};
 
+	/*
+		Set the base entry data to the specified template
+
+		@param template	the template node to change
+		@param name			the name of the entry
+		@param isOnline	wether the channel is streaming
+		@param extra		optional extra data to display
+
+		@returns if the template could be applied
+	*/
 	TwitchersBuilder.prototype.buildEntry = function(template, name, isOnline, extra ) {
 		template.find(".title").html(name);
 
@@ -137,11 +203,17 @@ var TwitchersBuilder = (function () {
 		return true;
 	};
 
+	/*
+		Called after the stream list is finished displaying - override to add extra data
+	*/
 	TwitchersBuilder.prototype.finishDisplay = function () {
 		this.filterStatus.call(this);
 		this._resContainer.show();
 	};
 
+	/*
+		Only display the elements with the specified status from the input radio
+	*/
 	TwitchersBuilder.prototype.filterStatus = function() {
 		var filter = jQuery("input:radio[name=view]:checked").attr('id');
 
@@ -161,6 +233,17 @@ var TwitchersBuilder = (function () {
 		}
 	};
 
+	//////////////////////////////////
+	// Local
+
+	/*
+		Helper function to safely get a child from json
+
+		@param json	the source data
+		@param path the path to the wanted node
+
+		@returns the node if found, or null
+	*/
 	function getNested(json, path) {
 		if (!path) {
 			return json;
@@ -175,16 +258,15 @@ var TwitchersBuilder = (function () {
 	}
 
 	/*
-		Private
+		Build the stream list from the returned json
 	*/
 	function buildFromStreams(json) {
-		var streams = getNested(json, this._listPath);
-		if ( streams === null || (Array.isArray && !Array.isArray(streams) ) ) {
+		var list = getNested(json, this._listPath);
+		if ( list === null || (Array.isArray && !Array.isArray(list) ) ) {
 			return;
 		}
 
-		// array of the online streamers
-		streams.forEach(function (entry, i) {
+		list.forEach(function (entry, i) {
 			var template = this._resTemplate.clone();
 			this.buildStream.call(this, template, getNested(entry, this._streamPath));
 		}, this);
@@ -193,9 +275,27 @@ var TwitchersBuilder = (function () {
 	return TwitchersBuilder;
 })();
 
+/*********************************************************
+	RegularsTwitchersBuilder overrides TwitchersBuilder
+
+	Manage the display from a list of channels by fetching the online streams
+	then appends the missing offline entries
+*********************************************************/
 var RegularsTwitchersBuilder = (function () {
-	// ctr
-	function RegularsTwitchersBuilder(listGetter, listPath, streamPath, channelPath, channelGetter, list) {
+
+	///////////////////////////////////////
+	// Public
+	/*
+		Ctr
+
+		@param listGetter		getter to get online streams from a list of channels
+		@param channelGetter	getter to get info for a channel
+		@param listPath		path from the listGetter json to the list entries
+		@param streamPath		path from the list entries to the stream object
+		@param channelPath	path from the stream object to the channel object
+		@param list				the list of channel name to display
+	*/
+	function RegularsTwitchersBuilder(listGetter, channelGetter, listPath, streamPath, channelPath, list) {
 		TwitchersBuilder.call(this, listGetter, listPath, streamPath, channelPath);
 
 		this._channelGetter = channelGetter;
@@ -203,18 +303,25 @@ var RegularsTwitchersBuilder = (function () {
 		this._numMissing = 0;
 	}
 
+	// object plumbing
 	RegularsTwitchersBuilder.prototype = Object.create(TwitchersBuilder.prototype);
 	RegularsTwitchersBuilder.prototype.constructor = RegularsTwitchersBuilder;
 
+	/*
+		Overrides TwitchersBuilder.finishDisplay to append the offline channels
+	*/
 	RegularsTwitchersBuilder.prototype.finishDisplay = function () {
 		this._numMissing = 0;
 
+		// find the unloadeds
 		var unloaded = [];
 		this._list.forEach(function(entry) {
 			if (!isLoaded.call(this, entry)) {
 				unloaded.push(entry);
 			}
 		}, this);
+
+		// fetch the unloadeds
 		unloaded.forEach(function(entry){
 			this._channelGetter.fetch({
 				'onDone' : function (json) {
@@ -233,7 +340,13 @@ var RegularsTwitchersBuilder = (function () {
 		}, this);
 	};
 
-	// case gets modified my the api
+	/////////////////////////////////////////
+	// Local
+
+	/*
+		Check if the specified channel is in the loaded list
+		(case gets modified my the api)
+	*/
 	function isLoaded(name) {
 		for(var i = 0; i < this._loadedTwichers.length; i++) {
 			if (name.toLowerCase() === this._loadedTwichers[i].toLowerCase()) {
@@ -243,14 +356,22 @@ var RegularsTwitchersBuilder = (function () {
 		return false;
 	}
 
+	/*
+		Called after receiving a response to check if it is the last one
+		to finish the building process
+	*/
 	function checkReceivedAll() {
 		if ((this._loadedTwichers.length + this._numMissing) >= this._list.length) {
+
+			// build base info for the missings
 			this._list.forEach(function (entry) {
 				if (!isLoaded.call(this, entry)) {
 					var template = this._resTemplate.clone();
 					this.buildEntry.call(this, template, entry, false, "Account closed");
 				}
 			}, this);
+
+			// we are really finished
 			TwitchersBuilder.prototype.finishDisplay.call(this);
 		}
 	}
@@ -259,18 +380,26 @@ var RegularsTwitchersBuilder = (function () {
 })();
 
 /*********************************************************
-	Twitch handler
+	Twitch page handler
 *********************************************************/
 
 var TwitchHandler = (function () {
-	// ctr
+
+	//////////////////////////////////////////
+	// Public
+
+	/*
+		Ctr
+	*/
 	function TwitchHandler() {
-		this._twitchRegularsBuilder = new RegularsTwitchersBuilder(createListGetter(), 'streams', '', 'channel',
-			createChannelGetter(), REGULARS);
+		this._twitchRegularsBuilder = new RegularsTwitchersBuilder(createListGetter(), createChannelGetter(),
+			'streams', '', 'channel', REGULARS);
 		this._twitchFeaturedBuilder = new TwitchersBuilder(createFeaturedGetter(), 'featured', 'stream', 'channel');
 	}
 
-	// called when the user chooses how to find the twitch streams
+	/*
+		called when the user chooses how to find the twitch streams
+	*/
 	TwitchHandler.prototype.onSourceChange = function() {
 		var source = jQuery("input:radio[name=source]:checked").attr('id');
 
@@ -285,7 +414,10 @@ var TwitchHandler = (function () {
 		this._currentBuilder.reset();
 	};
 
-	// called when the user chooses what twitch streams to display
+	/*
+		called when the user chooses what twitch streams to display
+
+	*/
 	TwitchHandler.prototype.onViewChange = function() {
 		if (this._currentBuilder) {
 			this._currentBuilder.filterStatus();
