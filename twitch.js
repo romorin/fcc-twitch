@@ -5,8 +5,8 @@ var REGULARS = ["ESL_SC2", "OgamingSC2", "cretetion", "freecodecamp", "storbeck"
 // Api handler configuration
 /*var createListGetter = function () { return new TestApiGetter(TEST_TWITCH_LIST_JSON ); };
 var createChannelGetter = function () { return new TestApiGetter(TEST_TWITCH_CHANNEL_JSON ); };
-var createFeaturedGetter = function () { return new TestApiGetter(TEST_TWITCH_FEATURED_JSON ); };*/
-
+var createFeaturedGetter = function () { return new TestApiGetter(TEST_TWITCH_FEATURED_JSON ); };
+*/
 var createListGetter = function () { return new RealApiGetter(generateRegularsQueryUrl); };
 var createChannelGetter = function () { return new RealApiGetter(generateChannelQueryUrl); };
 var createFeaturedGetter = function () { return new RealApiGetter(generateFeaturedQueryUrl); };
@@ -52,9 +52,10 @@ var TwitchersBuilder = (function () {
 	/*
 		Public
 	*/
-	function TwitchersBuilder(urlGetter, elemPath, channelPath) {
+	function TwitchersBuilder(urlGetter, listPath, streamPath, channelPath) {
 		this._urlGetter = urlGetter;
-		this._elemPath = elemPath;
+		this._listPath = listPath;
+		this._streamPath = streamPath;
 		this._channelPath = channelPath;
 
 		this._resContainer = jQuery(".results");
@@ -80,52 +81,60 @@ var TwitchersBuilder = (function () {
 	/*
 		Protected
 	*/
-	TwitchersBuilder.prototype.buildChannel = function(channel, isOnline) {
+	TwitchersBuilder.prototype.buildStream = function(template, stream) {
+		var channel = getNested(stream, this._channelPath);
+		if ( channel === null  || !('game' in stream) || !('viewers' in stream)) {
+			return false;
+		}
+
+		template.find(".game").html(stream.game).show();
+		template.find(".viewers").show().find(".value").html(stream.viewers);
+
+		return this.buildChannel.call(this, template, channel, true);
+	};
+
+	TwitchersBuilder.prototype.buildChannel = function(template, channel, isOnline) {
 		if(!('logo' in channel) || !('name' in channel) ||
 			!('status' in channel) || !('url' in channel)) {
 			return false;
 		}
 
-		this.buildEntry.call(this, channel.name, channel.status, isOnline, channel.logo, channel.url);
-		return true;
-	};
-
-	TwitchersBuilder.prototype.buildEntry = function(name, status, isOnline, logo, url ) {
-		// clone the template and fill the blanks
-		var copy = this._resTemplate.clone();
-		copy.find(".title").html(name);
-		copy.find(".content").html(status);
-
-		var statusClass = isOnline ? "online" : "offline";
-		copy.addClass(statusClass);
-
-		var logoElem = copy.find(".logo");
-		if (logo) {
-			logoElem.prop("src", logo);
-			logoElem.prop("alt", name);
-		}
+		var logoElem = template.find(".logo");
+		logoElem.prop("src", channel.logo);
+		logoElem.prop("alt", channel.name);
 
 		// handle mouse behaviour
-		if (url) {
-			copy.on("click", null, url,
-				function (event) {window.location.href = event.data;}
-			);
-			copy.hover(
-				function (event) {
-					var target = jQuery(event.currentTarget);
-					target.addClass('linkable');
-					target.find(".status-border").removeClass('hidden');
-				},
-				function (event) {
-					var target = jQuery(event.currentTarget);
-					target.removeClass('linkable');
-					target.find(".status-border").addClass('hidden');
-				}
-			);
+		template.on("click", null, channel.url,
+			function (event) {window.location.href = event.data;}
+		);
+		template.hover(
+			function (event) {
+				var target = jQuery(event.currentTarget);
+				target.addClass('linkable');
+				target.find(".status-border").removeClass('hidden');
+			},
+			function (event) {
+				var target = jQuery(event.currentTarget);
+				target.removeClass('linkable');
+				target.find(".status-border").addClass('hidden');
+			}
+		);
+
+		return this.buildEntry.call(this, template, channel.name, isOnline);
+	};
+
+	TwitchersBuilder.prototype.buildEntry = function(template, name, isOnline, extra ) {
+		template.find(".title").html(name);
+
+		if(extra) {
+			template.find(".extra").html(extra).show();
 		}
+		template.addClass(isOnline ? "online" : "offline");
 
 		this._loadedTwichers.push(name);
-		this._resContainer.append(copy);
+		this._resContainer.append(template);
+
+		return true;
 	};
 
 	TwitchersBuilder.prototype.finishDisplay = function () {
@@ -153,6 +162,9 @@ var TwitchersBuilder = (function () {
 	};
 
 	function getNested(json, path) {
+		if (!path) {
+			return json;
+		}
 		var parr = path.split('.');
 		var elem = json;
 		for (var i = 0; i < parr.length; i++) {
@@ -166,20 +178,15 @@ var TwitchersBuilder = (function () {
 		Private
 	*/
 	function buildFromStreams(json) {
-		var streams = getNested(json, this._elemPath);
+		var streams = getNested(json, this._listPath);
 		if ( streams === null || (Array.isArray && !Array.isArray(streams) ) ) {
 			return;
 		}
 
 		// array of the online streamers
 		streams.forEach(function (entry, i) {
-			// skip invalid result
-			var channel = getNested(streams[i], this._channelPath);
-			if ( channel === null ) {
-				return;
-			}
-			// clone the template and fill the blanks
-			this.buildChannel(channel, true);
+			var template = this._resTemplate.clone();
+			this.buildStream.call(this, template, getNested(entry, this._streamPath));
 		}, this);
 	}
 
@@ -188,8 +195,8 @@ var TwitchersBuilder = (function () {
 
 var RegularsTwitchersBuilder = (function () {
 	// ctr
-	function RegularsTwitchersBuilder(listGetter, elemPath, channelPath, channelGetter, list) {
-		TwitchersBuilder.call(this, listGetter, elemPath, channelPath);
+	function RegularsTwitchersBuilder(listGetter, listPath, streamPath, channelPath, channelGetter, list) {
+		TwitchersBuilder.call(this, listGetter, listPath, streamPath, channelPath);
 
 		this._channelGetter = channelGetter;
 		this._list = list;
@@ -211,7 +218,8 @@ var RegularsTwitchersBuilder = (function () {
 		unloaded.forEach(function(entry){
 			this._channelGetter.fetch({
 				'onDone' : function (json) {
-					if (!this.buildChannel(json, false)) {
+					var template = this._resTemplate.clone();
+					if (!this.buildChannel.call(this, template, json, false)) {
 						this._numMissing++;
 					}
 				}.bind(this),
@@ -239,7 +247,8 @@ var RegularsTwitchersBuilder = (function () {
 		if ((this._loadedTwichers.length + this._numMissing) >= this._list.length) {
 			this._list.forEach(function (entry) {
 				if (!isLoaded.call(this, entry)) {
-					this.buildEntry.call(this, entry, "Account closed", false);
+					var template = this._resTemplate.clone();
+					this.buildEntry.call(this, template, entry, false, "Account closed");
 				}
 			}, this);
 			TwitchersBuilder.prototype.finishDisplay.call(this);
@@ -256,9 +265,9 @@ var RegularsTwitchersBuilder = (function () {
 var TwitchHandler = (function () {
 	// ctr
 	function TwitchHandler() {
-		this._twitchRegularsBuilder = new RegularsTwitchersBuilder(createListGetter(), 'streams', 'channel',
+		this._twitchRegularsBuilder = new RegularsTwitchersBuilder(createListGetter(), 'streams', '', 'channel',
 			createChannelGetter(), REGULARS);
-		this._twitchFeaturedBuilder = new TwitchersBuilder(createFeaturedGetter(), 'featured', 'stream.channel');
+		this._twitchFeaturedBuilder = new TwitchersBuilder(createFeaturedGetter(), 'featured', 'stream', 'channel');
 	}
 
 	// called when the user chooses how to find the twitch streams
